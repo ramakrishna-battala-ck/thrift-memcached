@@ -1,0 +1,54 @@
+{
+  "name": "@creditkarma/thrift-memcached",
+  "version": "0.0.0",
+  "description": "Memcached client wrapper written in TypeScript with Thrift encoding/decoding support.",
+  "main": "dist/main/index.js",
+  "types": "dist/main/index.d.ts",
+  "files": [
+    "dist/main"
+  ],
+  "keywords": [
+    "typescript",
+    "memcached",
+    "thrift",
+    "caching"
+  ],
+  "scripts": {
+    "clean": "rimraf dist/",
+    "lint": "tslint --fix './src/**/*.ts'",
+    "build": "npm run clean && npm run lint && tsc",
+    "docker": "docker-compose up --force-recreate &",
+    "docker:kill": "docker-compose kill",
+    "pretest": "npm run docker:kill && npm run build",
+    "test": "npm run test:integration",
+    "test:unit": "lab --timeout 10000 --verbose -l -S -P spec dist/tests/unit",
+    "pretest:integration": "npm run docker",
+    "test:integration": "wait-on --timeout 20000 tcp:11211 && lab --timeout 15000 --verbose -l -S -P spec dist/tests/integration",
+    "posttest:integration": "npm run docker:kill",
+    "release:patch": "npm version patch && npm run release:publish",
+    "release:minor": "npm version minor && npm run release:publish",
+    "release:major": "npm version major && npm run release:publish",
+    "release:publish": "git push --follow-tags"
+  },
+  "author": "Credit Karma",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/creditkarma/thrift-memcached"
+  },
+  "devDependencies": {
+    "@types/code": "^4.0.3",
+    "@types/lab": "^11.1.0",
+    "@types/node": "^8.0.51",
+    "code": "^4.1.0",
+    "lab": "^14.3.1",
+    "rimraf": "^2.6.2",
+    "tslint": "^5.8.0",
+    "typescript": "2.8.x",
+    "wait-on": "^2.0.2"
+  },
+  "dependencies": {
+    "@types/memcached": "^2.2.5",
+    "memcached": "^2.2.2"
+  }
+}
